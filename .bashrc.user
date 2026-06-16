@@ -76,19 +76,6 @@ alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias sb='. ~/.bashrc.user'
-alias gf='gv $(fzf)'
-alias fd='cd $(find * -type d | fzf)'
-## Files under current directory(fzf)
-## - You can select multiple items with TAB key
-#vim **<TAB>
-## Files under parent directory
-#vim ../**<TAB>
-## Files under parent directory that match `fzf`
-#vim ../fzf**<TAB>
-## Files under your home directory
-#vim ~/**<TAB>
-## Directories under current directory (single-selection)
-#cd **<TAB>
 
 alias kt='gnome-terminal --geometry=80x24+0+10&'
 alias pdf='evince'
@@ -146,8 +133,6 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 #    return 0
 #}
 #complete -o nospace -F _gvComplete gv
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # exctags -R --sort=1 --c++-kinds=+p --fields=+iaS --extras=+q --language-force=C++ `pwd`
 # exctags -R --C-kinds=+p --fields=+aS --extras=+q `pwd`

@@ -2,26 +2,20 @@
 """"""""""""""""""""""""""""modified by zhajio"""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "define prefix of shortcut key, as well as <Leader>
+set nocompatible
 let mapleader = "\\"
 
-execute pathogen#infect()
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""runtimepath  fzf doesn't work
-set rtp+=~/.fzf 
-call plug#begin()
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-call plug#end()
-
-let g:fzf_launcher = 'gnome-terminal --hide-menubar --disable-factory -x bash -ic %s'
+if filereadable(expand('~/.vim/autoload/pathogen.vim'))
+    execute pathogen#infect()
+endif
 """"""""""""""""""""<color scheme setting>""""""""""""""""""
 ""vim color scheme setting 
 if has("gui_running")
     set background=dark
-    colorscheme desert    
+    silent! colorscheme desert
     "colorscheme solarized
 else
-    colorscheme molokai
+    silent! colorscheme molokai
 endif
 
 """"""""""""""""""some useful plugins setting"""""""""""""""
@@ -48,7 +42,9 @@ endif
 ""highlight Pmenu    guibg=darkgrey  guifg=black
 ""highlight PmenuSel guibg=lightgrey guifg=black
 
-set cscopetag
+if has("cscope")
+    set cscopetag
+endif
 
 """"""""""""""""""""""""<win_manager>""""""""""""""""""""""""""
 let g:winManagerWindowLayout='FileExplorer'
@@ -64,9 +60,27 @@ let g:SuperTabDefaultCompletionType = 'context'
 ""let g:SuperTabRetainCompletionType = 2
 ""let g:SuperTabDefaultCompletionType = "<C-X><C-O>" 
 ""tagbar
-let g:tagbar_ctags_bin='~/bin/exctags'
+let s:ctags_bin = ''
+if executable(expand('~/bin/exctags'))
+    let s:ctags_bin=expand('~/bin/exctags')
+elseif executable('ctags')
+    let s:ctags_bin='ctags'
+endif
+if s:ctags_bin != ''
+    let g:tagbar_ctags_bin=s:ctags_bin
+    let Tlist_Ctags_Cmd=s:ctags_bin
+endif
 let g:tagbar_autofocus = 1
-nmap <silent> <F4> :TagbarToggle<CR>
+function! s:ToggleTagWindow()
+    if exists(':TagbarToggle') == 2
+        TagbarToggle
+    elseif exists(':TlistToggle') == 2
+        TlistToggle
+    else
+        echo "Tagbar/Taglist plugin is not available"
+    endif
+endfunction
+nmap <silent> <F4> :call <SID>ToggleTagWindow()<CR>
 let g:tagbar_type_systemverilog = {
         \ 'ctagstype'   : 'SystemVerilog',
         \ 'kinds'       : [
@@ -179,20 +193,7 @@ ab /b ///<
 
 """"""""""""""""""ctags list"""""""""""""""""""""""""""
 let $project_name = $PRJ_NAME
-set tags+=~/ctags/uvm_tags
-set tags+=~/ctags/jesd_tags
-set tags+=~/ctags/soc_vv_tags
-set tags+=~/ctags/vip_tags
-set tags+=~/ctags/eth_tags
-set tags+=~/ctags/hwa_tags
-set tags+=~/ctags/soc_fw_tags
-set tags+=~/ctags/andes_tags
-set tags+=~/ctags/fhi_tags
-set tags+=~/ctags/ot_tags
-set tags+=~/ctags/pal_tags
-set tags+=~/ctags/fw_tags
-set tags+=~/ctags/hwal_tags
-set tags+=./tags
+set tags=./tags,./.tags,tags,../tags,../../tags
 if $project_name =~ 'll'
 endif
 
@@ -202,7 +203,9 @@ set dictionary=~/.vim/words/uvm_kwords,$VCS_HOME/gui/tb/qdbg_sv.ini,/usr/share/d
 set isfname+={,}
 set isfname-=,
 """"""""""""""""""""""<gui_font_setting>""""""""""""""""""
-set linespace=1
+if exists('&linespace')
+    set linespace=1
+endif
 if has("gui_running")
         if has("gui_gtk2")
                 ":set guifont=Bitstream\ Vera\ Sans\ Mono\ 11
@@ -218,9 +221,11 @@ if has("gui_running")
 endif
 
 """""""""""""""""""""""< menu and item >"""""""""""""""""""""
-set guioptions+=m
-set guioptions-=T
-set guioptions+=b
+if exists('&guioptions')
+    set guioptions+=m
+    set guioptions-=T
+    set guioptions+=b
+endif
 
 """""""""""""""""""""status columbar""""""""""""""""""""""""
 set laststatus =2
@@ -369,7 +374,6 @@ set undolevels=500
 ""set tw=120
 set nu
 set ru
-set nocompatible
 set nobackup
 set noswapfile
 set cmdheight=1

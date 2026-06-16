@@ -1,12 +1,52 @@
 # my_vimrc
 jude's vimrc for DV work(fine tuning for SV/UVM)
 
-## install 
+## Company portable package
+
+For company gvim 7.4.x migration, use the self-contained package:
+
+```bash
+cd company_vim_portable
+bash install.sh
+gvim -V9/tmp/gvim_startup.log test.sv
+```
+
+This package merges the current server personal vim habits with SV/UVM editing
+support. It is offline-friendly, removes fzf, and does not include old generated
+ctags databases. Generate project tags on the company server as needed:
+
+```bash
+~/bin/exctags -R -f tags .
+```
+
+## legacy install
 `git config --global core.autocrlf false`
 
 `git clone https://github.com/zhajio1988/my_vimrc.git`
 
-`cp my_vimrc/* ~/`
+Do not use `cp my_vimrc/* ~/` for a clean migration. It misses hidden files
+such as `.vimrc` and `.vim`, and copying dotfiles manually may overwrite shell
+or git settings.
+
+## Vim 7.4 offline migration
+
+For a clean company gvim 7.4 environment, use the migration script instead of
+copying files manually. It links only Vim related files and backs up existing
+targets before replacing them.
+
+```bash
+cd my_vimrc
+bash install_vim7.sh
+gvim -V9/tmp/gvim_startup.log test.sv
+```
+
+Notes:
+- The script does not touch `.bashrc`, `.cshrc`, `.gitconfig`, `.gitignore` or
+  `.emacs.d`.
+- F4 uses Tagbar if available, otherwise it falls back to the bundled Taglist.
+  Both use `~/bin/exctags`, which the script links from this repository.
+- Pre-generated ctags databases are not included. Generate project tags after
+  installation with `~/bin/exctags -R -f tags .`.
 
 ## plugin
 ```
@@ -47,8 +87,6 @@ pathogen.vim
 | 行级跳转(\\\j \\\k \\\h \\\l) |  hjkl 快速跳转 |
 
 ## reference
-https://github.com/junegunn/fzf
-
 https://segmentfault.com/a/1190000015977368
 
 http://www.wklken.me/posts/2015/06/07/vim-plugin-easymotion.html

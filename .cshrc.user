@@ -83,11 +83,9 @@ a       ....      "cd ../../.."
 a   gz "find ./ |xargs grep -n --color=auto"
 a   gr 'grep -n -R --exclude-dir=.git --color=auto'
 a   gv "gvim -geom=185x45+0+10"
-a   gf 'gv $(fzf)'
 a   g "gv -geom=185x45-0+50"
 a   gn 'gvim -u "NONE"'
 a   kt '"konsole --nofork --geometry=800x600&"'
-a   fcd 'cd $(find * -type d | fzf)'
 a   exctags 'exctags -R --extras=+q --fields=+i'
 a   rm 'rm -i'
 

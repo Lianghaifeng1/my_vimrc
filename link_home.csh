@@ -1,16 +1,8 @@
-#ln -sf `pwd`/bin          ~/bin
-ln -sf `pwd`/.vim         ~/.vim
-ln -sf `pwd`/.fzf         ~/.fzf
-ln -sf `pwd`/.emacs.d     ~/.emacs.d
-ln -sf `pwd`/.ctags.d     ~/.ctags.d
-ln -sf `pwd`/.vimrc       ~/.vimrc
-ln -sf `pwd`/.uvmrc       ~/.uvmrc
-ln -sf `pwd`/.bashrc.user ~/own.bashrc
-ln -sf `pwd`/.gitconfig   ~/.gitconfig
-ln -sf `pwd`/_bashrc      ~/.bashrc
-ln -sf `pwd`/.cshrc.user  ~/.cshrc.user
-ln -sf `pwd`/.gitignore   ~/.gitignore
-ln -sf `pwd`/.ctags       ~/.ctags
-ln -sf `pwd`/.cshrc       ~/.cshrc
-ln -sf `pwd`/.fzf.bash    ~/.fzf.bash
-#ln -sf `pwd`/../ctags        ~/ctags
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "link_home.csh is kept for compatibility."
+echo "Using install_vim7.sh; shell/git config files will not be touched."
+exec bash "${script_dir}/install_vim7.sh" "$@"
