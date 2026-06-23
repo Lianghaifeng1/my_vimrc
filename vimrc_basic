@@ -1,113 +1,189 @@
+" 关闭与传统 Vi 的兼容模式，启用 Vim 的扩展功能。
 set nocompatible
+" 设置 Vim 内部编码为 UTF-8，避免中文或多语言文本乱码。
 set encoding=utf-8
 
+" 将 Leader 键设置为单引号 '，后面的 <leader> 映射都以它为前缀。
 let mapleader="'"
+" 自动补全弹窗功能总开关，1 表示启用。
 let g:base_autopopup_enable = 1
+" 自动弹出补全前，至少需要输入 2 个关键字字符。
 let g:base_autopopup_min_chars = 2
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_winsize = 25
-let g:netrw_altv = 0
-let g:netrw_browse_split = 2
-let g:netrw_keepdir = 1
 
+" 命令行历史记录保存 400 条。
 set history=400
+" 显示行号。
 set number
+" 在状态栏显示当前光标所在的行列位置等信息。
 set ruler
+" 当文件被外部程序修改后，自动重新读取。
 set autoread
+" 允许退格删除自动缩进、换行和插入起始位置之前的内容。
 set backspace=indent,eol,start
+" 命令行补全时启用增强菜单。
 set wildmenu
+" 在右下角显示尚未执行完成的命令。
 set showcmd
+" 光标停在括号上时高亮匹配括号。
 set showmatch
+" 匹配括号高亮持续 5 个时间单位，即 0.5 秒。
 set matchtime=5
+" 搜索默认忽略大小写。
 set ignorecase
+" 搜索关键字中出现大写字母时，自动改为大小写敏感。
 set smartcase
+" 输入搜索模式时增量显示匹配结果。
 set incsearch
+" 高亮所有搜索匹配项。
 set hlsearch
+" 搜索到文件末尾后不回绕到开头继续搜索。
 set nowrapscan
+" 始终显示状态栏。
 set laststatus=2
+" 命令行区域高度设置为 1 行。
 set cmdheight=1
+" 写文件时优先使用 unix 换行格式，兼容 dos。
 set fileformats=unix,dos
+" 打开文件时按顺序尝试这些编码进行解码。
 set fileencodings=utf-8,gbk,big5,euc-jp,gb2312
+" 插入模式补全时，候选来源包括当前缓冲区、窗口、已加载/未加载缓冲区、tags 和 include 文件。
 set complete=.,w,b,u,t,i
+" 补全菜单行为：显示菜单，并且只有一个候选时也显示。
 set completeopt=menu,menuone
+" 不自动折行，长行保持单行显示。
 set nowrap
+" 高亮当前光标所在行。
 set cursorline
 
+" 显示时一个 Tab 占 2 个空格宽度。
 set tabstop=2
+" 编辑时把 Tab 当作 2 个空格宽度处理。
 set softtabstop=2
+" 自动缩进时每一级缩进使用 2 个空格。
 set shiftwidth=2
+" 在行首按 Tab 时使用更智能的缩进行为。
 set smarttab
+" 输入 Tab 时插入空格而不是真实 Tab 字符。
 set expandtab
+" 新行自动继承上一行缩进。
 set autoindent
 
+" 开启文件类型识别、对应插件和缩进规则。
 filetype plugin indent on
+" 开启语法高亮。
 syntax enable
+" 使用 desert 配色方案；如果不存在则静默忽略错误。
 silent! colorscheme desert
 
+" 定义文件类型相关自动命令组。
 augroup BaseFiletype
+    " 清空该组里旧的自动命令，避免重复定义。
     autocmd!
+    " Makefile 文件必须使用真实 Tab，因此关闭 expandtab。
     autocmd FileType make setlocal noexpandtab
+    " Verilog/SystemVerilog 文件统一使用 2 空格缩进、// 注释格式，并将下划线视为关键字一部分。
     autocmd FileType verilog,systemverilog setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab commentstring=//\ %s iskeyword+=_
+    " 读取或新建 .sv/.svh/.svi 文件时，强制识别为 systemverilog 文件类型。
     autocmd BufRead,BufNewFile *.sv,*.svh,*.svi set filetype=systemverilog
+    " 读取或新建 .v 文件时，强制识别为 verilog 文件类型。
     autocmd BufRead,BufNewFile *.v set filetype=verilog
+" 结束文件类型自动命令组。
 augroup END
 
+" 普通模式下 Ctrl-j 切到下方窗口。
 nnoremap <C-j> <C-w>j
+" 普通模式下 Ctrl-k 切到上方窗口。
 nnoremap <C-k> <C-w>k
+" 普通模式下 Ctrl-h 切到左侧窗口。
 nnoremap <C-h> <C-w>h
+" 普通模式下 Ctrl-l 切到右侧窗口。
 nnoremap <C-l> <C-w>l
+" 输入 bb 关闭当前 buffer。
 nnoremap bb :bd<CR>
+" 输入 ww 强制保存当前文件。
 nnoremap ww :w!<CR>
+" 输入 wq 强制保存并退出。
 nnoremap wq :wq!<CR>
+" 输入 qq 强制退出，不保存修改。
 nnoremap qq :q!<CR>
-nnoremap nn :Lexplore<CR>
+" 将大写 J 映射成向下移动 3 行。
 nnoremap J 3j
+" 将大写 K 映射成向上移动 3 行。
 nnoremap K 3k
+" 将大写 H 映射为跳到当前行行首，silent 表示不显示命令回显。
 nnoremap <silent> H 0
+" 将大写 L 映射为跳到当前行行尾，silent 表示不显示命令回显。
 nnoremap <silent> L $
+" 使用 <leader>ev 横向分屏打开 ~/.vimrc。
 nnoremap <leader>ev :sp ~/.vimrc<CR>
+" 使用 <leader>sv 重新加载 ~/.vimrc 配置。
 nnoremap <leader>sv :source ~/.vimrc<CR>
+" 使用 <leader>回车 清除搜索高亮。
 nnoremap <silent> <leader><CR> :noh<CR>
+" 输入 bn 切换到下一个 buffer。
 nnoremap bn :bnext<CR>
+" 输入 bp 切换到上一个 buffer。
 nnoremap bp :bprevious<CR>
+" 输入 bl 列出当前所有 buffer。
 nnoremap bl :ls<CR>
 
-nnoremap cn :cnext<CR>
-nnoremap cp :cprevious<CR>
-nnoremap cl :clist<CR>
-nnoremap cw :cwindow 10<CR>
-
+" 输入 vh 以垂直分屏方式打开 netrw 文件浏览器。
 map vh :Vexplore<CR>
+" 输入 vl 以更宽的垂直浏览方式打开 netrw 文件浏览器。
 map vl :Vexplore!<CR>
 
+" 插入模式下，如果补全菜单可见，则 Tab 选择下一项，否则执行普通 Tab。
 inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" 插入模式下，如果补全菜单可见，则 Shift-Tab 选择上一项，否则执行默认 Shift-Tab。
 inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" 插入模式下，如果补全菜单可见，则回车确认当前补全项，否则执行普通回车。
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
 
+" 定义一个脚本局部函数，用来在插入模式中自动触发补全弹窗。
 function! s:AutoPopupComplete() abort
+    " 如果全局开关关闭，则不执行自动补全逻辑。
     if !get(g:, 'base_autopopup_enable', 1)
+        " 直接返回。
         return
+    " 结束是否启用自动补全的判断。
     endif
+    " 如果补全菜单已经打开，则不重复触发。
     if pumvisible()
+        " 直接返回。
         return
+    " 结束补全菜单是否已显示的判断。
     endif
 
+    " 获取当前光标所在行的完整文本。
     let l:line = getline('.')
+    " 获取当前光标前一个字符的位置，转换为从 0 开始的列号。
     let l:col = col('.') - 1
+    " 如果当前已经在行首，则没有可用于补全的前缀。
     if l:col <= 0
+        " 直接返回。
         return
+    " 结束列位置判断。
     endif
 
+    " 从光标前文本中提取最后一个连续关键字串，作为补全前缀。
     let l:prefix = matchstr(strpart(l:line, 0, l:col), '\k\+$')
+    " 如果前缀长度小于阈值，则不弹出补全。
     if strlen(l:prefix) < get(g:, 'base_autopopup_min_chars', 2)
+        " 直接返回。
         return
+    " 结束前缀长度判断。
     endif
 
+    " 通过先发送 Ctrl-n 再发送 Ctrl-p 的方式，触发 Vim 内建补全菜单出现。
     call feedkeys("\<C-n>\<C-p>", 'n')
+" 结束自动补全函数定义。
 endfunction
 
+" 定义自动补全相关自动命令组。
 augroup BaseAutoPopup
+    " 清空旧的自动命令定义，避免重复触发。
     autocmd!
+    " 在插入模式中光标移动时调用自动补全函数。
     autocmd CursorMovedI * call <SID>AutoPopupComplete()
+" 结束自动补全自动命令组。
 augroup END
