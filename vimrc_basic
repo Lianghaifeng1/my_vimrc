@@ -1,0 +1,113 @@
+set nocompatible
+set encoding=utf-8
+
+let mapleader="'"
+let g:base_autopopup_enable = 1
+let g:base_autopopup_min_chars = 2
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_winsize = 25
+let g:netrw_altv = 0
+let g:netrw_browse_split = 2
+let g:netrw_keepdir = 1
+
+set history=400
+set number
+set ruler
+set autoread
+set backspace=indent,eol,start
+set wildmenu
+set showcmd
+set showmatch
+set matchtime=5
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+set nowrapscan
+set laststatus=2
+set cmdheight=1
+set fileformats=unix,dos
+set fileencodings=utf-8,gbk,big5,euc-jp,gb2312
+set complete=.,w,b,u,t,i
+set completeopt=menu,menuone
+set nowrap
+set cursorline
+
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set smarttab
+set expandtab
+set autoindent
+
+filetype plugin indent on
+syntax enable
+silent! colorscheme desert
+
+augroup BaseFiletype
+    autocmd!
+    autocmd FileType make setlocal noexpandtab
+    autocmd FileType verilog,systemverilog setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab commentstring=//\ %s iskeyword+=_
+    autocmd BufRead,BufNewFile *.sv,*.svh,*.svi set filetype=systemverilog
+    autocmd BufRead,BufNewFile *.v set filetype=verilog
+augroup END
+
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap bb :bd<CR>
+nnoremap ww :w!<CR>
+nnoremap wq :wq!<CR>
+nnoremap qq :q!<CR>
+nnoremap nn :Lexplore<CR>
+nnoremap J 3j
+nnoremap K 3k
+nnoremap <silent> H 0
+nnoremap <silent> L $
+nnoremap <leader>ev :sp ~/.vimrc<CR>
+nnoremap <leader>sv :source ~/.vimrc<CR>
+nnoremap <silent> <leader><CR> :noh<CR>
+nnoremap bn :bnext<CR>
+nnoremap bp :bprevious<CR>
+nnoremap bl :ls<CR>
+
+nnoremap cn :cnext<CR>
+nnoremap cp :cprevious<CR>
+nnoremap cl :clist<CR>
+nnoremap cw :cwindow 10<CR>
+
+map vh :Vexplore<CR>
+map vl :Vexplore!<CR>
+
+inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+
+function! s:AutoPopupComplete() abort
+    if !get(g:, 'base_autopopup_enable', 1)
+        return
+    endif
+    if pumvisible()
+        return
+    endif
+
+    let l:line = getline('.')
+    let l:col = col('.') - 1
+    if l:col <= 0
+        return
+    endif
+
+    let l:prefix = matchstr(strpart(l:line, 0, l:col), '\k\+$')
+    if strlen(l:prefix) < get(g:, 'base_autopopup_min_chars', 2)
+        return
+    endif
+
+    call feedkeys("\<C-n>\<C-p>", 'n')
+endfunction
+
+augroup BaseAutoPopup
+    autocmd!
+    autocmd CursorMovedI * call <SID>AutoPopupComplete()
+augroup END
